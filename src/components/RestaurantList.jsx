@@ -1,37 +1,41 @@
-import '../css/RestaurantList.css';
-
 import { CATEGORIES } from '../constants/categories';
+import {
+  RestaurantItem,
+  RestaurantButton,
+  RestaurantCategory,
+  CategoryIcon,
+  RestaurantInfo,
+  RestaurantName,
+  RestaurantDescription,
+  RestaurantListContainer,
+} from './RestaurantList.styles';
 
 const IMAGE_DIRECTORY = '/images';
 
 function Restaurant({ restaurant, onSelectRestaurant }) {
   return (
-    <li className="restaurant">
-      <button type="button" className="restaurant__button" onClick={() => onSelectRestaurant(restaurant)}>
-        <div className="restaurant__category">
-          <img
-            src={`${IMAGE_DIRECTORY}/category-${CATEGORIES[restaurant.category]}.png`}
-            alt={restaurant.category}
-            className="category-icon"
-          />
-        </div>
-        <div className="restaurant__info">
-          <h3 className="restaurant__name text-subtitle">{restaurant.name}</h3>
-          <p className="restaurant__description text-body">{restaurant.description}</p>
-        </div>
-      </button>
-    </li>
+    <RestaurantItem>
+      <RestaurantButton type="button" onClick={() => onSelectRestaurant(restaurant)}>
+        <RestaurantCategory>
+          <CategoryIcon src={`${IMAGE_DIRECTORY}/category-${CATEGORIES[restaurant.category]}.png`} alt={restaurant.category} />
+        </RestaurantCategory>
+        <RestaurantInfo>
+          <RestaurantName>{restaurant.name}</RestaurantName>
+          <RestaurantDescription>{restaurant.description}</RestaurantDescription>
+        </RestaurantInfo>
+      </RestaurantButton>
+    </RestaurantItem>
   );
 }
 
 export default function RestaurantList({ restaurants, onSelectRestaurant }) {
   return (
-    <section className="restaurant-list-container">
+    <RestaurantListContainer>
       <ul className="restaurant-list">
         {restaurants.map((restaurant) => (
           <Restaurant key={restaurant.id} restaurant={restaurant} onSelectRestaurant={onSelectRestaurant} />
         ))}
       </ul>
-    </section>
+    </RestaurantListContainer>
   );
 }
