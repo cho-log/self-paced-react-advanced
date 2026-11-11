@@ -1,7 +1,6 @@
-import '../css/Modal.css';
-
 import { CATEGORIES } from '../constants/categories';
 import Modal from './Modal';
+import { FormItem, RequiredFormItem, HelpText, ButtonContainer, PrimaryButton } from './Modal.styles';
 
 export default function AddRestaurantModal({ onAddRestaurant, onClose }) {
   function handleSubmit(event) {
@@ -21,7 +20,7 @@ export default function AddRestaurantModal({ onAddRestaurant, onClose }) {
     <Modal title="새로운 음식점" onClose={onClose}>
       <form onSubmit={handleSubmit}>
         {/*카테고리*/}
-        <div className="form-item form-item--required">
+        <RequiredFormItem>
           <label htmlFor="category">카테고리</label>
           <select name="category" id="category" required>
             <option value="">선택해 주세요</option>
@@ -31,24 +30,22 @@ export default function AddRestaurantModal({ onAddRestaurant, onClose }) {
               </option>
             ))}
           </select>
-        </div>
+        </RequiredFormItem>
         {/*음식점이름*/}
-        <div className="form-item form-item--required">
+        <RequiredFormItem>
           <label htmlFor="name">이름</label>
           <input type="text" name="name" id="name" required />
-        </div>
+        </RequiredFormItem>
         {/*설명*/}
-        <div className="form-item">
+        <FormItem>
           <label htmlFor="description">설명</label>
           <textarea name="description" id="description" cols="30" rows="5"></textarea>
-          <span className="help-text text-caption">메뉴 등 추가 정보를 입력해 주세요.</span>
-        </div>
+          <HelpText>메뉴 등 추가 정보를 입력해 주세요.</HelpText>
+        </FormItem>
         {/*추가버튼*/}
-        <div className="button-container">
-          <button className="button button--primary text-caption" type="submit">
-            추가하기
-          </button>
-        </div>
+        <ButtonContainer>
+          <PrimaryButton type="submit">추가하기</PrimaryButton>
+        </ButtonContainer>
       </form>
     </Modal>
   );
