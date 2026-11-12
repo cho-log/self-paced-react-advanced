@@ -1,24 +1,24 @@
-import Modal from "./Modal";
+import styled from 'styled-components';
+import Modal from './Modal';
+import { ButtonContainer, PrimaryButton } from './Button';
+import { textBody } from '../styles/typography';
 
 function RestaurantDetailModal({ restaurant, onClose }) {
   return (
     <Modal title={restaurant.name} onClose={onClose}>
-      <div className="restaurant-info">
-        <p className="restaurant-info__description text-body">
-          {restaurant.description}
-        </p>
-      </div>
-      <div className="button-container">
-        <button
-          type="button"
-          className="button button--primary text-caption"
-          onClick={onClose}
-        >
+      <Description>{restaurant.description}</Description>
+      <ButtonContainer>
+        <PrimaryButton type="button" onClick={onClose}>
           확인
-        </button>
-      </div>
+        </PrimaryButton>
+      </ButtonContainer>
     </Modal>
   );
 }
+
+const Description = styled.p`
+  ${textBody}
+  margin-bottom: 24px;
+`;
 
 export default RestaurantDetailModal;

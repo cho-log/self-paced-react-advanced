@@ -1,17 +1,18 @@
-import { useState } from "react";
-import Modal from "./Modal";
-import { CATEGORIES } from "../constants/categories";
+import { useState } from 'react';
+import styled, { css } from 'styled-components';
+import Modal from './Modal';
+import { ButtonContainer, PrimaryButton } from './Button';
+import { CATEGORIES } from '../constants/categories';
+import { textCaption } from '../styles/typography';
 
 function AddRestaurantModal({ onAddRestaurant, onClose }) {
-  // 입력값을 state로 관리 (controlled)
-  const [category, setCategory] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  // 추가에 실패했을 때 보여줄 안내 문구
-  const [errorMessage, setErrorMessage] = useState("");
+  const [category, setCategory] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // 제출할 때 새로고침 막기
+    event.preventDefault();
 
     try {
       await onAddRestaurant({
@@ -22,9 +23,9 @@ function AddRestaurantModal({ onAddRestaurant, onClose }) {
       });
       onClose();
     } catch (error) {
-      console.error("Error adding restaurant:", error);
+      console.error('Error adding restaurant:', error);
       setErrorMessage(
-        "음식점을 추가하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+        '음식점을 추가하지 못했습니다. 잠시 후 다시 시도해 주세요.',
       );
     }
   };
@@ -32,12 +33,11 @@ function AddRestaurantModal({ onAddRestaurant, onClose }) {
   return (
     <Modal title="새로운 음식점" onClose={onClose}>
       <form onSubmit={handleSubmit}>
-        {/* 카테고리 */}
-        <div className="form-item form-item--required">
-          <label htmlFor="category" className="text-caption">
+        <FormItem>
+          <Label htmlFor="category" $required>
             카테고리
-          </label>
-          <select
+          </Label>
+          <Select
             name="category"
             id="category"
             required
@@ -50,15 +50,14 @@ function AddRestaurantModal({ onAddRestaurant, onClose }) {
                 {item}
               </option>
             ))}
-          </select>
-        </div>
+          </Select>
+        </FormItem>
 
-        {/* 음식점 이름 */}
-        <div className="form-item form-item--required">
-          <label htmlFor="name" className="text-caption">
+        <FormItem>
+          <Label htmlFor="name" $required>
             이름
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             name="name"
             id="name"
@@ -66,38 +65,87 @@ function AddRestaurantModal({ onAddRestaurant, onClose }) {
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
-        </div>
+        </FormItem>
 
-        {/* 설명 */}
-        <div className="form-item">
-          <label htmlFor="description" className="text-caption">
-            설명
-          </label>
-          <textarea
+        <FormItem>
+          <Label htmlFor="description">설명</Label>
+          <Textarea
             name="description"
             id="description"
             cols={30}
             rows={5}
             value={description}
             onChange={(event) => setDescription(event.target.value)}
-          ></textarea>
-          <span className="help-text text-caption">
-            메뉴 등 추가 정보를 입력해 주세요.
-          </span>
-        </div>
+          />
+          <HelpText>메뉴 등 추가 정보를 입력해 주세요.</HelpText>
+        </FormItem>
 
-        {/* 실패 안내 */}
-        {errorMessage && <p className="text-caption">{errorMessage}</p>}
+        {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
 
-        {/* 추가 버튼 */}
-        <div className="button-container">
-          <button type="submit" className="button button--primary text-caption">
-            추가하기
-          </button>
-        </div>
+        <ButtonContainer>
+          <PrimaryButton type="submit">추가하기</PrimaryButton>
+        </ButtonContainer>
       </form>
     </Modal>
   );
 }
+
+const FormItem = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 36px;
+`;
+
+const Label = styled.label`
+  ${textCaption}
+  color: var(--grey-400);
+
+  ${({ $required }) =>
+    $required &&
+    css`
+      &::after {
+        padding-left: 4px;
+        color: var(--primary-color);
+        content: '*';
+      }
+    `}
+`;
+
+// 입력칸 3개가 같이 쓰는 스타일
+const fieldStyle = css`
+  padding: 8px;
+  margin: 6px 0;
+
+  border: 1px solid var(--grey-200);
+  border-radius: 8px;
+
+  font-size: 16px;
+`;
+
+const Input = styled.input`
+  ${fieldStyle}
+  height: 44px;
+`;
+
+const Select = styled.select`
+  ${fieldStyle}
+  height: 44px;
+  color: var(--grey-300);
+`;
+
+const Textarea = styled.textarea`
+  ${fieldStyle}
+  resize: none;
+`;
+
+const HelpText = styled.span`
+  ${textCaption}
+  color: var(--grey-300);
+`;
+
+const ErrorText = styled.p`
+  ${textCaption}
+`;
 
 export default AddRestaurantModal;
