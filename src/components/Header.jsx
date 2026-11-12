@@ -1,20 +1,53 @@
-import "./Header.css";
-import addButton from "../assets/add-button.png";
+import styled from 'styled-components';
+import addButton from '../assets/add-button.png';
+import { textTitle } from '../styles/typography';
 
 function Header({ onClickAddButton }) {
   return (
-    <header className="gnb">
-      <h1 className="gnb__title text-title">점심 뭐 먹지</h1>
-      <button
+    <Gnb>
+      <Title>점심 뭐 먹지</Title>
+      <AddButton
         type="button"
-        className="gnb__button"
         aria-label="음식점 추가"
         onClick={onClickAddButton}
       >
         <img src={addButton} alt="음식점 추가" />
-      </button>
-    </header>
+      </AddButton>
+    </Gnb>
   );
 }
+
+const Gnb = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 0 16px;
+
+  background-color: var(--primary-color);
+`;
+
+const Title = styled.h1`
+  ${textTitle}
+  color: #fcfcfd;
+`;
+
+const AddButton = styled.button`
+  height: 40px;
+
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+
+  font-size: 24px;
+  cursor: pointer;
+
+  img {
+    display: block;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+`;
 
 export default Header;
