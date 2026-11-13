@@ -1,12 +1,103 @@
+import { useState, useEffect } from 'react';
+import './App.css';
 
-import './App.css'
+import Header from './components/Header';
+import CategoryFilter from './components/CategoryFilter';
+import RestaurantList from './components/RestaurantList';
+import RestaurantDetailModal from './components/RestaurantDetailModal';
+import AddRestaurantModal from './components/AddRestaurantModal';
 
-function App() {
+const RESTAURANT_LIST_URL = 'http://localhost:3000/restaurants';
+
+export default function App() {
+  const [category, setCategory] = useState('전체');
+  const [activeModal, setActiveModal] = useState(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [restaurantList, setRestaurantList] = useState([]);
+  const [isAddingRestaurant, setIsAddingRestaurant] = useState(false);
+
+  const filteredRestaurants = filterRestaurants();
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadRestaurantList() {
+      const newRestaurantList = await getRestaurantList();
+
+      if (!ignore) {
+        setRestaurantList(newRestaurantList);
+      }
+    }
+
+    loadRestaurantList();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  async function getRestaurantList() {
+    const response = await fetch(RESTAURANT_LIST_URL);
+    return await response.json();
+  }
+
+  function filterRestaurants() {
+    return category === '전체' ? restaurantList : restaurantList.filter((restaurant) => restaurant.category === category);
+  }
+
+  function handleModalClose() {
+    setActiveModal(null);
+    setSelectedRestaurant(null); //선택된 음식점 해제
+  }
+
+  function handleSelectRestaurant(restaurant) {
+    setSelectedRestaurant(restaurant);
+    setActiveModal('restaurantDetail');
+  }
+
+  function handleOpenAddRestaurant() {
+    setActiveModal('addRestaurant');
+  }
+
+  async function handleAddRestaurant(restaurant) {
+    if (isAddingRestaurant) return;
+
+    setIsAddingRestaurant(true);
+
+    try {
+      const response = await fetch(RESTAURANT_LIST_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(restaurant),
+      });
+
+      if (!response.ok) {
+        throw new Error(`음식점 저장 실패: ${response.status}`);
+      }
+
+      setRestaurantList(await getRestaurantList());
+      handleModalClose();
+    } catch (error) {
+      console.error(error);
+      alert(`음식점 저장에 실패하였습니다.`);
+    } finally {
+      setIsAddingRestaurant(false);
+    }
+  }
+
   return (
     <>
-        Code It..
+      <Header onOpenAddRestaurant={handleOpenAddRestaurant} />
+      <main>
+        <CategoryFilter category={category} onChangeCategory={setCategory} />
+        <RestaurantList restaurants={filteredRestaurants} onSelectRestaurant={handleSelectRestaurant} />
+      </main>
+      <aside>
+        {activeModal === 'restaurantDetail' && <RestaurantDetailModal restaurant={selectedRestaurant} onClose={handleModalClose} />}
+        {activeModal === 'addRestaurant' && <AddRestaurantModal onAddRestaurant={handleAddRestaurant} onClose={handleModalClose} />}
+      </aside>
     </>
-  )
+  );
 }
-
-export default App
