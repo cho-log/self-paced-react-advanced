@@ -113,14 +113,6 @@ export const PrimaryButton = styled(Button)`
   /*기존 text-caption에 있던 부분*/
   font-size: 14px;
   line-height: 20px;
-  font-weight: 400;
-`;
-
-export const SecondaryButton = styled(Button)`
-  border: 1px solid var(--grey-300);
-  background: transparent;
-
-  color: var(--grey-300);
 `;
 
 export const RestaurantInfo = styled.div`

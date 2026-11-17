@@ -1,13 +1,13 @@
-import { ModalBackdrop, ModalContainer, ModalTitle } from './Modal.styles';
+import * as S from './Modal.styles';
 
 export default function Modal({ children, title, onClose }) {
   return (
     <>
-      <ModalBackdrop onClick={onClose} />
-      <ModalContainer>
-        <ModalTitle>{title}</ModalTitle>
+      <S.ModalBackdrop onClick={onClose} />
+      <S.ModalContainer>
+        <S.ModalTitle>{title}</S.ModalTitle>
         {children}
-      </ModalContainer>
+      </S.ModalContainer>
     </>
   );
 }

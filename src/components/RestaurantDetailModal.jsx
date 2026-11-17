@@ -1,18 +1,18 @@
 import Modal from './Modal';
-import { RestaurantInfo, ButtonContainer, PrimaryButton, RestaurantInfoDescription } from './Modal.styles';
+import * as S from './Modal.styles';
 
 export default function RestaurantDetailModal({ restaurant, onClose }) {
   return (
     <Modal title={restaurant.name} onClose={onClose}>
-      <RestaurantInfo>
-        <RestaurantInfoDescription>{restaurant.description}</RestaurantInfoDescription>
-      </RestaurantInfo>
+      <S.RestaurantInfo>
+        <S.RestaurantInfoDescription>{restaurant.description}</S.RestaurantInfoDescription>
+      </S.RestaurantInfo>
       {/*닫기버튼*/}
-      <ButtonContainer>
-        <PrimaryButton type="button" onClick={onClose}>
+      <S.ButtonContainer>
+        <S.PrimaryButton type="button" onClick={onClose}>
           닫기
-        </PrimaryButton>
-      </ButtonContainer>
+        </S.PrimaryButton>
+      </S.ButtonContainer>
     </Modal>
   );
 }
