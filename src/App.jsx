@@ -11,16 +11,11 @@ import AddRestaurantModal from './components/AddRestaurantModal';
 const RESTAURANT_LIST_URL = 'http://localhost:3000/restaurants';
 
 export default function App() {
-  const category = useAppStore((state) => state.category);
   const activeModal = useAppStore((state) => state.activeModal);
-  const changeActiveModal = useAppStore((state) => state.changeActiveModal);
-  const changeSelectedRestaurant = useAppStore((state) => state.changeSelectedRestaurant);
-  const restaurantList = useAppStore((state) => state.restaurantList);
   const changeRestaurantList = useAppStore((state) => state.changeRestaurantList);
   const isAddingRestaurant = useAppStore((state) => state.isAddingRestaurant);
   const changeIsAddingRestaurant = useAppStore((state) => state.changeIsAddingRestaurant);
-
-  const filteredRestaurants = filterRestaurants();
+  const closeModal = useAppStore((state) => state.closeModal);
 
   useEffect(() => {
     let ignore = false;
@@ -45,24 +40,6 @@ export default function App() {
     return await response.json();
   }
 
-  function filterRestaurants() {
-    return category === '전체' ? restaurantList : restaurantList.filter((restaurant) => restaurant.category === category);
-  }
-
-  function handleModalClose() {
-    changeActiveModal(null);
-    changeSelectedRestaurant(null); //선택된 음식점 해제
-  }
-
-  function handleSelectRestaurant(restaurant) {
-    changeSelectedRestaurant(restaurant);
-    changeActiveModal('restaurantDetail');
-  }
-
-  function handleOpenAddRestaurant() {
-    changeActiveModal('addRestaurant');
-  }
-
   async function handleAddRestaurant(restaurant) {
     if (isAddingRestaurant) return;
 
@@ -82,7 +59,7 @@ export default function App() {
       }
 
       changeRestaurantList(await getRestaurantList());
-      handleModalClose();
+      closeModal();
     } catch (error) {
       console.error(error);
       alert(`음식점 저장에 실패하였습니다.`);
@@ -93,14 +70,14 @@ export default function App() {
 
   return (
     <>
-      <Header onOpenAddRestaurant={handleOpenAddRestaurant} />
+      <Header />
       <main>
         <CategoryFilter />
-        <RestaurantList restaurants={filteredRestaurants} onSelectRestaurant={handleSelectRestaurant} />
+        <RestaurantList />
       </main>
       <aside>
-        {activeModal === 'restaurantDetail' && <RestaurantDetailModal onClose={handleModalClose} />}
-        {activeModal === 'addRestaurant' && <AddRestaurantModal onAddRestaurant={handleAddRestaurant} onClose={handleModalClose} />}
+        {activeModal === 'restaurantDetail' && <RestaurantDetailModal />}
+        {activeModal === 'addRestaurant' && <AddRestaurantModal onAddRestaurant={handleAddRestaurant} />}
       </aside>
     </>
   );

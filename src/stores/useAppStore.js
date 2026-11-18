@@ -8,8 +8,10 @@ export const useAppStore = create((set) => ({
   isAddingRestaurant: false,
 
   changeCategory: (category) => set({ category: category }),
-  changeActiveModal: (activeModal) => set({ activeModal: activeModal }),
-  changeSelectedRestaurant: (selectedRestaurant) => set({ selectedRestaurant: selectedRestaurant }),
   changeRestaurantList: (restaurantList) => set({ restaurantList: restaurantList }),
   changeIsAddingRestaurant: (isAddingRestaurant) => set({ isAddingRestaurant: isAddingRestaurant }),
+
+  closeModal: () => set({ activeModal: null, selectedRestaurant: null }),
+  openAddRestaurantModal: () => set({ activeModal: 'addRestaurant' }),
+  selectRestaurant: (restaurant) => set({ activeModal: 'restaurantDetail', selectedRestaurant: restaurant }),
 }));
