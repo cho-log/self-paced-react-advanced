@@ -1,7 +1,10 @@
+import { useAppStore } from '../stores/useAppStore';
 import Modal from './Modal';
 import * as S from './Modal.styles';
 
-export default function RestaurantDetailModal({ restaurant, onClose }) {
+export default function RestaurantDetailModal({ onClose }) {
+  const restaurant = useAppStore((state) => state.selectedRestaurant);
+
   return (
     <Modal title={restaurant.name} onClose={onClose}>
       <S.RestaurantInfo>

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useAppStore } from './stores/useAppStore';
+import { useEffect } from 'react';
 import './App.css';
 
 import Header from './components/Header';
@@ -10,11 +11,14 @@ import AddRestaurantModal from './components/AddRestaurantModal';
 const RESTAURANT_LIST_URL = 'http://localhost:3000/restaurants';
 
 export default function App() {
-  const [category, setCategory] = useState('전체');
-  const [activeModal, setActiveModal] = useState(null);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-  const [restaurantList, setRestaurantList] = useState([]);
-  const [isAddingRestaurant, setIsAddingRestaurant] = useState(false);
+  const category = useAppStore((state) => state.category);
+  const activeModal = useAppStore((state) => state.activeModal);
+  const changeActiveModal = useAppStore((state) => state.changeActiveModal);
+  const changeSelectedRestaurant = useAppStore((state) => state.changeSelectedRestaurant);
+  const restaurantList = useAppStore((state) => state.restaurantList);
+  const changeRestaurantList = useAppStore((state) => state.changeRestaurantList);
+  const isAddingRestaurant = useAppStore((state) => state.isAddingRestaurant);
+  const changeIsAddingRestaurant = useAppStore((state) => state.changeIsAddingRestaurant);
 
   const filteredRestaurants = filterRestaurants();
 
@@ -25,7 +29,7 @@ export default function App() {
       const newRestaurantList = await getRestaurantList();
 
       if (!ignore) {
-        setRestaurantList(newRestaurantList);
+        changeRestaurantList(newRestaurantList);
       }
     }
 
@@ -46,23 +50,23 @@ export default function App() {
   }
 
   function handleModalClose() {
-    setActiveModal(null);
-    setSelectedRestaurant(null); //선택된 음식점 해제
+    changeActiveModal(null);
+    changeSelectedRestaurant(null); //선택된 음식점 해제
   }
 
   function handleSelectRestaurant(restaurant) {
-    setSelectedRestaurant(restaurant);
-    setActiveModal('restaurantDetail');
+    changeSelectedRestaurant(restaurant);
+    changeActiveModal('restaurantDetail');
   }
 
   function handleOpenAddRestaurant() {
-    setActiveModal('addRestaurant');
+    changeActiveModal('addRestaurant');
   }
 
   async function handleAddRestaurant(restaurant) {
     if (isAddingRestaurant) return;
 
-    setIsAddingRestaurant(true);
+    changeIsAddingRestaurant(true);
 
     try {
       const response = await fetch(RESTAURANT_LIST_URL, {
@@ -77,13 +81,13 @@ export default function App() {
         throw new Error(`음식점 저장 실패: ${response.status}`);
       }
 
-      setRestaurantList(await getRestaurantList());
+      changeRestaurantList(await getRestaurantList());
       handleModalClose();
     } catch (error) {
       console.error(error);
       alert(`음식점 저장에 실패하였습니다.`);
     } finally {
-      setIsAddingRestaurant(false);
+      changeIsAddingRestaurant(false);
     }
   }
 
@@ -91,11 +95,11 @@ export default function App() {
     <>
       <Header onOpenAddRestaurant={handleOpenAddRestaurant} />
       <main>
-        <CategoryFilter category={category} onChangeCategory={setCategory} />
+        <CategoryFilter />
         <RestaurantList restaurants={filteredRestaurants} onSelectRestaurant={handleSelectRestaurant} />
       </main>
       <aside>
-        {activeModal === 'restaurantDetail' && <RestaurantDetailModal restaurant={selectedRestaurant} onClose={handleModalClose} />}
+        {activeModal === 'restaurantDetail' && <RestaurantDetailModal onClose={handleModalClose} />}
         {activeModal === 'addRestaurant' && <AddRestaurantModal onAddRestaurant={handleAddRestaurant} onClose={handleModalClose} />}
       </aside>
     </>
