@@ -1,12 +1,105 @@
+import "./App.css";
+import Header from "./components/header/Header";
+import FilterableRestaurantList from "./components/main/FilterableRestaurantList";
+import Aside from "./components/aside/Aside";
 
-import './App.css'
+import { RESTAURANTS } from "./data/restaurants";
+import { useState, useEffect } from "react";
+
+import {useSelector,useDispatch} from "react-redux";
+import { setCategory } from "./store/categorySlice";
 
 function App() {
+  
+  const category =useSelector(
+    (state) =>state.category.selectedCategory
+  );
+
+  const dispatch =useDispatch();
+
+  const [isRestaurantInfoModalOpen, setIsRestaurantInfoModalOpen] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [restaurants, setRestaurants] = useState(RESTAURANTS);
+
+  const fetchRestaurants = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/restaurants");
+      const data = await response.json();
+      setRestaurants(data);
+    } catch (error) {
+      console.error("레스토랑 목록 데이터를 불러오는데 실패", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
+
+  const handleAddRestaurant = async (newRestaurant) => {
+    try {
+      await fetch("http://localhost:3000/restaurants", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newRestaurant),
+      });
+      fetchRestaurants();
+    } catch (error) {
+      console.error("레스토랑 추가에 실패했습니다.", error);
+    }
+  };
+
+
+
+  const filteredRestaurants = restaurants.filter(
+    (restaurant) =>
+      category === "전체" || restaurant.category === category
+  );
+
+  function handleChangeCategory(newCategory){
+    dispatch(setCategory(newCategory));
+  }
+
+  function handleOpenModal(restaurant) {
+    setSelectedRestaurant(restaurant);
+    setIsRestaurantInfoModalOpen(true);
+  }
+
+  function handleCloseModal() {
+    setSelectedRestaurant(null);
+    setIsRestaurantInfoModalOpen(false);
+  }
+
+  function handleOpenAddModal() {
+    setIsAddModalOpen(true);
+  }
+
+  function handleCloseAddModal() {
+    setIsAddModalOpen(false);
+  }
+
   return (
     <>
-        Code It..
+      <Header
+        onOpenAddModal={handleOpenAddModal}
+      />
+      <FilterableRestaurantList
+        restaurants={filteredRestaurants}
+        onOpenModal={handleOpenModal}
+      />
+      <Aside
+        isModalOpen={isRestaurantInfoModalOpen}
+        selectedRestaurant={selectedRestaurant}
+        onCloseModal={handleCloseModal}
+
+        isAddModalOpen={isAddModalOpen}
+        onCloseAddModal={handleCloseAddModal}
+        onAddRestaurant={handleAddRestaurant}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
