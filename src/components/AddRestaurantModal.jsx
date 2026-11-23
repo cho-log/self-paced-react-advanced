@@ -1,14 +1,17 @@
+import { useAppStore } from '../stores/useAppStore';
 import { CATEGORIES } from '../constants/categories';
 import Modal from './Modal';
 import * as S from './Modal.styles';
 
-export default function AddRestaurantModal({ onAddRestaurant }) {
+export default function AddRestaurantModal() {
+  const addRestaurant = useAppStore((state) => state.addRestaurant);
+
   function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
-    onAddRestaurant({
+    addRestaurant({
       name: formData.get('name'),
       description: formData.get('description'),
       category: formData.get('category'),

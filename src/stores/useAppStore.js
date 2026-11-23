@@ -1,17 +1,12 @@
 import { create } from 'zustand';
+import { createModalSlice } from './createModalSlice';
+import { createRestaurantSlice } from './createRestaurantSlice';
 
-export const useAppStore = create((set) => ({
+export const useAppStore = create((set, get) => ({
+  ...createModalSlice(set),
+  ...createRestaurantSlice(set, get),
+
   category: '전체',
-  activeModal: null,
-  selectedRestaurant: null,
-  restaurantList: [],
-  isAddingRestaurant: false,
 
   changeCategory: (category) => set({ category: category }),
-  changeRestaurantList: (restaurantList) => set({ restaurantList: restaurantList }),
-  changeIsAddingRestaurant: (isAddingRestaurant) => set({ isAddingRestaurant: isAddingRestaurant }),
-
-  closeModal: () => set({ activeModal: null, selectedRestaurant: null }),
-  openAddRestaurantModal: () => set({ activeModal: 'addRestaurant' }),
-  selectRestaurant: (restaurant) => set({ activeModal: 'restaurantDetail', selectedRestaurant: restaurant }),
 }));
