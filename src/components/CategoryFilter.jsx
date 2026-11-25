@@ -1,9 +1,13 @@
+import { useAppStore } from '../stores/useAppStore.js';
 import { CATEGORIES } from '../constants/categories';
 import * as S from './CategoryFilter.styles.js';
 
-export default function CategoryFilter({ category, onChangeCategory }) {
+export default function CategoryFilter() {
+  const category = useAppStore((state) => state.category);
+  const changeCategory = useAppStore((state) => state.changeCategory);
+
   function handleChange(event) {
-    onChangeCategory(event.target.value);
+    changeCategory(event.target.value);
   }
 
   return (

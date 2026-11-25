@@ -1,15 +1,17 @@
+import { useAppStore } from '../stores/useAppStore';
 import { CATEGORIES } from '../constants/categories';
 import Modal from './Modal';
 import * as S from './Modal.styles';
 
-export default function AddRestaurantModal({ onAddRestaurant, onClose }) {
+export default function AddRestaurantModal() {
+  const addRestaurant = useAppStore((state) => state.addRestaurant);
+
   function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
-    onAddRestaurant({
-      id: Date.now(),
+    addRestaurant({
       name: formData.get('name'),
       description: formData.get('description'),
       category: formData.get('category'),
@@ -17,7 +19,7 @@ export default function AddRestaurantModal({ onAddRestaurant, onClose }) {
   }
 
   return (
-    <Modal title="새로운 음식점" onClose={onClose}>
+    <Modal title="새로운 음식점">
       <form onSubmit={handleSubmit}>
         {/*카테고리*/}
         <S.RequiredFormItem>
