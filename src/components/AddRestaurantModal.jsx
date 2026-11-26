@@ -4,8 +4,11 @@ import Modal from './Modal';
 import { ButtonContainer, PrimaryButton } from './Button';
 import { CATEGORIES } from '../constants/categories';
 import { textCaption } from '../styles/typography';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 
-function AddRestaurantModal({ onAddRestaurant, onClose }) {
+function AddRestaurantModal({ onAddRestaurant }) {
+  const closeAddModal = useRestaurantStore((s) => s.closeAddModal);
+
   const [category, setCategory] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -21,7 +24,7 @@ function AddRestaurantModal({ onAddRestaurant, onClose }) {
         name,
         description,
       });
-      onClose();
+      closeAddModal();
     } catch (error) {
       console.error('Error adding restaurant:', error);
       setErrorMessage(
@@ -31,7 +34,7 @@ function AddRestaurantModal({ onAddRestaurant, onClose }) {
   };
 
   return (
-    <Modal title="새로운 음식점" onClose={onClose}>
+    <Modal title="새로운 음식점" onClose={closeAddModal}>
       <form onSubmit={handleSubmit}>
         <FormItem>
           <Label htmlFor="category" $required>

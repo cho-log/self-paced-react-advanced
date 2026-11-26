@@ -1,15 +1,31 @@
 import styled from 'styled-components';
-import { CATEGORY_ICONS } from '../constants/categories';
+import { ALL_CATEGORY, CATEGORY_ICONS } from '../constants/categories';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 import { textBody, textSubtitle } from '../styles/typography';
 
-function RestaurantList({ restaurants, onSelectRestaurant }) {
+function RestaurantList({ restaurants, isLoading, error }) {
+  const selectedCategory = useRestaurantStore((s) => s.selectedCategory);
+  const selectRestaurant = useRestaurantStore((s) => s.selectRestaurant);
+
+  if (isLoading) return <StatusText>불러오는 중...</StatusText>;
+  if (error) return <StatusText>음식점 목록을 불러오지 못했습니다.</StatusText>;
+
+  const filteredRestaurants =
+    selectedCategory === ALL_CATEGORY
+      ? restaurants
+      : restaurants.filter(
+          (restaurant) => restaurant.category === selectedCategory,
+        );
+
   return (
     <ListContainer>
       <ul>
-        {restaurants.map((restaurant) => (
+        {filteredRestaurants.map((restaurant) => (
           <Item
             key={restaurant.id}
-            onClick={() => onSelectRestaurant(restaurant)}
+            role="button"
+            tabIndex={0}
+            onClick={() => selectRestaurant(restaurant)}
           >
             <CategoryIconWrapper>
               <CategoryIcon
@@ -27,6 +43,11 @@ function RestaurantList({ restaurants, onSelectRestaurant }) {
     </ListContainer>
   );
 }
+
+const StatusText = styled.p`
+  ${textBody}
+  padding: 16px;
+`;
 
 const ListContainer = styled.section`
   display: flex;

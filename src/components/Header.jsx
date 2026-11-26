@@ -1,16 +1,15 @@
 import styled from 'styled-components';
 import addButton from '../assets/add-button.png';
 import { textTitle } from '../styles/typography';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 
-function Header({ onClickAddButton }) {
+function Header() {
+  const openAddModal = useRestaurantStore((s) => s.openAddModal);
+
   return (
     <Gnb>
       <Title>점심 뭐 먹지</Title>
-      <AddButton
-        type="button"
-        aria-label="음식점 추가"
-        onClick={onClickAddButton}
-      >
+      <AddButton type="button" aria-label="음식점 추가" onClick={openAddModal}>
         <img src={addButton} alt="음식점 추가" />
       </AddButton>
     </Gnb>
